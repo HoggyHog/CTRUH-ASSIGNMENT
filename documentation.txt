@@ -1,0 +1,50 @@
+
+So here is the breif overview of the project before I explain it in more detail
+
+Since models exist which quite convineintly perform the text-to-image conversion which was required 
+to be done in the assignment, I tried to fine-tune the output images of the model to get a more 'cartoonish, pokemon' look.
+Following this fine-tuning on the StableDiffusion model, I hosted the inference step on the backend using FastAPI and then created
+a simple frontend using React framework. The details on how to install and get it running on local system are provided in the readme file.
+
+##IMP 
+
+When the python file would be run in the cmd using 'uvicorn api:app --reload' command, the lines from 26-263 have been commented and wont run.
+These lines are basically the entire training procedure, which I have commented due to low computational power, and would be using pretrained weights
+for the model. However if your local machine has good computational power, then feel free to remove the comments, train the weights, and then use those weights
+for the model rather than the pretrained weights.
+
+
+DATASET
+So the type of data that would be used for the pre-training would be <image,text> pairs, which have been convineintly hosted on the link
+'https://huggingface.co/datasets/sayakpaul/pokemon-blip-original-version/resolve/main/pokemon_dataset.tar.gz'.
+
+
+TRAINING
+So the first step was to convert all the captions from the dataset into tokens, since it would be more efficient to train using token embeddings
+Following this, the images are resized, augmented, and then batches made of this processed image, and the tokenised text.
+
+Now the trainer class is defined where the weights would be trained over the incoming batches, also the optimisers and loss functions are defined
+Now we plan to train the model for 60 epochs, and save the weights to make the model based on this.
+
+INFERENCE
+
+As mentioned prior, the normal run of the program would use the pretrained, fine-tuned weights from https://huggingface.co/sayakpaul/kerascv_sd_pokemon_finetuned/resolve/main/ckpt_epochs_72_res_512_mp_True.h5
+But if there's no issue with the computational power, the user is free to run the training steps which have been commented, and use those
+weights which get saved, but they're essentially the same. 
+
+BACKEND API HOSTING
+
+So for this, we would be using FastAPI, where for the '/' endpoint, we would pass an api from the Frontend which would provide the prompt for the inference 
+with the model. Then the image is first saved on the local system, and then converted to base 64, which is then passed along the response of the api to the frontend.
+
+FRONTEND 
+
+The frontend for this project is quite a simple one, using tailwindcss for the styling and axios for accessing the api endpoint. A text input takes in the prompt, and using a generate
+button, this prompt is passed into the api, which returns the image string, which is then rendered on the web app. The entire progress of the computation can be
+monitored on the server command line.
+
+REFERENCES:
+https://youtu.be/3l16wCsDglU
+https://keras.io/examples/generative/finetune_stable_diffusion/
+https://towardsdatascience.com/how-to-fine-tune-stable-diffusion-using-textual-inversion-b995d7ecc095
+
